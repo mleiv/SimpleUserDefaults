@@ -26,23 +26,7 @@ myStoredPreference.set("notHappy")
 
 ### Suggested Extensions
 
-1. I'd recommend extending SimpleUserDefaults.init() and get() to accept your own enum type, and use that to define the keys.
-```swift
-// Example of using enums for access:
-public enum UserDefaultsKey: String {
-    case myStoredPreference = "MyStoredPreference"
-}
-
-extension SimpleUserDefaults {
-    // OMG we can put init() in extensions now! I <3 Swift 3
-    public init(name: UserDefaultsKey, defaultValue: Type? = nil) {
-        self.name = name.rawValue
-        self.defaultValue = defaultValue
-    }
-}
-```
-
-2. Here is a way to improve access with a bit more declaration code. If you want to make them look exactly like regular properties or stuff.
+1. Here is a way to improve access with a bit more declaration code. If you want to make them look exactly like regular properties or stuff.
 ```swift
 // Example of using getter/setter and private store to simplify access:
 private var _myStoredPreference = SimpleUserDefaults<String>(name: "myStoredPreference",  defaultValue: "none")
