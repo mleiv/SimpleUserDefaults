@@ -122,19 +122,3 @@ public struct SimpleUserDefaults<Type> {
     }
 }
 
-
-
-
-// Example of using enums for access:
-//public enum UserDefaultsKey: String {
-//    case myStoredPreference = "MyStoredPreference"
-//}
-//
-//extension SimpleUserDefaults {
-//    // OMG we can put init() in extensions now! I <3 Swift 3
-//    public init(name: UserDefaultsKey, defaultValue: Type? = nil) {
-//        self.name = name.rawValue
-//        self.defaultValue = defaultValue
-//    }
-//}
-
