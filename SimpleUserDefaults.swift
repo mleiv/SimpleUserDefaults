@@ -9,7 +9,7 @@
 //  Redistributions of files must retain the above copyright notice.
 //
 
-import Foundation
+import UIKit
 
 /// A simplified way to get/set user defaults.
 ///
@@ -60,24 +60,18 @@ public struct SimpleUserDefaults<Type> {
     /// 4. nil.
     public mutating func get() -> Type? {
         if !hasCachedValue {
-            if defaultValue is NSURL {
+            if Type.self == URL.self {
                 hasCachedValue = true
                 value = UserDefaults.standard.url(forKey: name) as? Type
-            } else if defaultValue is Bool {
+            } else if Type.self == Bool.self
+                || Type.self == Int.self
+                || Type.self == Decimal.self
+                || Type.self == Double.self
+                || Type.self == Float.self
+                || Type.self == CGFloat.self
+                || Type.self == String.self {
                 hasCachedValue = true
-                value = UserDefaults.standard.bool(forKey: name) as? Type
-            } else if defaultValue is Int {
-                hasCachedValue = true
-                value = UserDefaults.standard.integer(forKey: name) as? Type
-            } else if defaultValue is Double {
-                hasCachedValue = true
-                value = UserDefaults.standard.double(forKey: name) as? Type
-            } else if defaultValue is Float {
-                hasCachedValue = true
-                value = UserDefaults.standard.float(forKey: name) as? Type
-            } else if defaultValue is String {
-                hasCachedValue = true
-                value = UserDefaults.standard.string(forKey: name) as? Type
+                value = UserDefaults.standard.object(forKey: name) as? Type
             } else {
                 // we don't always have to archive Array and Dictionary
                 // but this is easier
@@ -96,12 +90,13 @@ public struct SimpleUserDefaults<Type> {
     public mutating func set(_ value: Type?) {
         self.value = value
         hasCachedValue = true
-        if defaultValue is NSURL
-            || defaultValue is Bool
-            || defaultValue is Int 
-            || defaultValue is Double
-            || defaultValue is Float 
-            || defaultValue is String {
+        if Type.self == URL.self
+            || Type.self == Bool.self
+            || Type.self == Decimal.self
+            || Type.self == Double.self
+            || Type.self == Float.self
+            || Type.self == CGFloat.self
+            || Type.self == String.self {
             hasCachedValue = true
             if let value = value {
                 UserDefaults.standard.set(value, forKey: name)
