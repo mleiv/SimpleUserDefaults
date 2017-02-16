@@ -92,6 +92,7 @@ public struct SimpleUserDefaults<Type> {
         hasCachedValue = true
         if Type.self == URL.self
             || Type.self == Bool.self
+            || Type.self == Int.self
             || Type.self == Decimal.self
             || Type.self == Double.self
             || Type.self == Float.self
