@@ -2,7 +2,7 @@
 //  SimpleUserDefaults.swift
 //
 //  Created by Emily Ivie on 1/6/17.
-//  Copyright © 2017 Emily Ivie. 
+//  Copyright © 2017 Emily Ivie.
 //
 //  Licensed under The MIT License
 //  For full copyright and license information, please see http://opensource.org/licenses/MIT
@@ -27,12 +27,13 @@ import UIKit
 ///
 /// let changeToken: CKServerChangeToken = tokenFetchedFromCKCompletionBlock
 /// myLocalToken.set(changeToken)
+/// ````
 public struct SimpleUserDefaults<Type> {
     let name: String
     var value: Type?
     var defaultValue: Type?
     var hasCachedValue: Bool = false
-    
+
     /// Creates a cacheable UserDefaults entry of generic type.
     ///
     /// - Parameter name: The key to use when storing to UserDefaults. Should be unique.
@@ -41,7 +42,7 @@ public struct SimpleUserDefaults<Type> {
         self.name = name
         self.defaultValue = defaultValue
     }
-    
+
     /// Clears any prior cached values. (Chainable)
     ///
     /// - Returns: this SimpleUserDefaults object
@@ -50,7 +51,7 @@ public struct SimpleUserDefaults<Type> {
         hasCachedValue = false
         return self
     }
-    
+
     /// Retrieves the current UserDefaults stored value.
     ///
     /// Returns:
@@ -72,18 +73,19 @@ public struct SimpleUserDefaults<Type> {
                 || Type.self == String.self {
                 hasCachedValue = true
                 value = UserDefaults.standard.object(forKey: name) as? Type
-            } else {
+            } else if let T = Type.self as? AnyClass,
+                let data = UserDefaults.standard.object(forKey: name) as? Data {
                 // we don't always have to archive Array and Dictionary
                 // but this is easier
-                hasCachedValue = true
-                if let data = UserDefaults.standard.object(forKey: name) as? Data {
-                    value = (NSKeyedUnarchiver.unarchiveObject(with: data) as? Type)
+                if let unarchivedData = try? NSKeyedUnarchiver.__unarchivedObject(of: T.self, from: data) {
+                    hasCachedValue = true
+                    value = unarchivedData as? Type
                 }
             }
         }
         return value ?? defaultValue
     }
-    
+
     /// Stores a new value to UserDefaults and caches it locally.
     ///
     /// - Parameter value: The new value to store.
@@ -106,15 +108,14 @@ public struct SimpleUserDefaults<Type> {
             }
         } else {
             hasCachedValue = true
-            if let value = value {
-                UserDefaults.standard.set(
-                    NSKeyedArchiver.archivedData(withRootObject: value),
-                    forKey: name
-                )
+            let setValue: Data?
+            if let value = value,
+                let archivedValue = try? NSKeyedArchiver.archivedData(withRootObject: value, requiringSecureCoding: true) {
+                setValue = archivedValue
             } else {
-                UserDefaults.standard.set(nil, forKey: name)
+                setValue = nil
             }
+            return UserDefaults.standard.set(setValue, forKey: "GameDataChangeToken")
         }
     }
 }
-

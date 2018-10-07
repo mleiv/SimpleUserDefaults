@@ -1,6 +1,6 @@
 # SimpleUserDefaults
 
-A type-agnostic, highly simplified way to get/set UserDefaults using Swift 3.
+A type-agnostic, highly simplified way to get/set UserDefaults using Swift 4.2.
 
 Before you try this type, I highly recommend looking at https://github.com/radex/SwiftyUserDefaults first. Since you probably want that instead. This was an experiment, and I just found that I preferred the encapsulated object property access for my defaults-stored data, rather than the more general Default[.property] access (which I understand most other people would choose).
 
